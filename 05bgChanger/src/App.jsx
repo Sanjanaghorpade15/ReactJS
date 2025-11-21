@@ -1,48 +1,69 @@
-import { useState } from 'react'
+import { useState } from "react";
+import InputBox from "./InputBox";
+import useCurrencyInfo from "./useCurrencyInfo";
 
 function App() {
-  const [color, setColor] = useState("olive")
-  
+    const [amount, setAmount] = useState(1);
+    const [from, setFrom] = useState("usd");
+    const [to, setTo] = useState("inr");
+    const [convertedAmount, setConvertedAmount] = useState(0);
 
-  return (
-    <div className='w-full h-screen duration-200' style={{backgroundColor: color}}>
-      <div className='fixed flex flex-wrap justify-center bottom-12 inset-x-0 px-2'>
-        <div className=' flex flex-wrap justify-center shadow-lg bg-white px-3 py-2  gap-3 rounded-lg'>
-          <button 
-           onClick = {() => setColor("red")}
-           className='outline-none px-4 py-1 rouded-full text-white font-bold' style={{backgroundColor: "red"}}>
-            Red
-          </button>
-          <button 
-           onClick = {() => setColor("blue")}
-           className='outline-none px-4 py-1 rouded-full text-white font-bold' style={{backgroundColor: "blue"}}>
-            Blue
-          </button>
-          <button 
-           onClick = {() => setColor("green")}
-           className='outline-none px-4 py-1 rouded-full text-white font-bold' style={{backgroundColor: "green"}}>
-            Green
-          </button>
-          <button 
-           onClick = {() => setColor("purple")}
-           className='outline-none px-4 py-1 rouded-full text-white font-bold' style={{backgroundColor: "purple"}}>
-            Lavender
-          </button>
-          <button 
-           onClick = {() => setColor("black")} 
-           className='outline-none px-4 py-1 rouded-full text-white font-bold' style={{backgroundColor: "black"}}>
-            Black
-          </button>
-          <button 
-           onClick = {() => setColor("pink")}
-           className='outline-none px-4 py-1 rouded-full text-white font-bold' style={{backgroundColor: "pink"}}>
-            Pink
-          </button>
+    const currencyInfo = useCurrencyInfo(from);
+    const options = Object.keys(currencyInfo);
+
+    const convert = () => {
+        if (!currencyInfo[to]) return;
+        setConvertedAmount(amount * currencyInfo[to]);
+    };
+
+    const swap = () => {
+        setFrom(to);
+        setTo(from);
+        setConvertedAmount(amount);
+        setAmount(convertedAmount);
+    };
+
+    return (
+        <div className="w-full h-screen flex justify-center items-center bg-blue-300">
+            <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+
+                <InputBox
+                    label="From"
+                    amount={amount}
+                    onAmountChange={setAmount}
+                    onCurrencyChange={setFrom}
+                    currencyOptions={options}
+                    selectCurrency={from}
+                />
+
+                <div className="flex justify-center my-4">
+                    <button
+                        onClick={swap}
+                        className="bg-gray-800 text-white px-4 py-2 rounded-lg"
+                    >
+                        Swap
+                    </button>
+                </div>
+
+                <InputBox
+                    label="To"
+                    amount={convertedAmount}
+                    amountDisable={true}
+                    onCurrencyChange={setTo}
+                    currencyOptions={options}
+                    selectCurrency={to}
+                />
+
+                <button
+                    onClick={convert}
+                    className="w-full mt-4 bg-blue-500 text-white py-2 rounded-lg"
+                >
+                    Convert
+                </button>
+
+            </div>
         </div>
-      </div>
-    </div>
-    
-  )
+    );
 }
 
-export default App
+export default App;
