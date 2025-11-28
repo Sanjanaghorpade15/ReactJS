@@ -10,9 +10,11 @@ import Profile from './components/Profile'
 function App() {
   return (
     <UserContextProvider>
-      <h1>ReactJS</h1>
-      <Login />
-      <Profile />
+      <div>
+        <h1 className='main-heading'>ReactJS</h1>
+        <Login />
+        <Profile />
+      </div>
     </UserContextProvider>
   )
 }
